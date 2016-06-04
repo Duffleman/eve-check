@@ -23,6 +23,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('check')->everyMinute();
+        $schedule->command('check')->everyThirtyMinutes();
     }
 }
