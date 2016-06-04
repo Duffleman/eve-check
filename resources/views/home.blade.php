@@ -43,11 +43,37 @@
         </div>
     </div>
 </div>
+<div class="row" id="notification_panel">
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Notification Settings</span>
+                <div class="alert red darken-1" v-show="!use_mobile">
+                    <h4>No mobile number</h4>
+                    <p>You have no mobile number set, therefore we cannot text you if your character is found offline :/</p>
+                </div>
+                <div class="row">
+                    <form class="col s12" v-on:submit.prevent="update">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input v-model="mobile_phone" placeholder="+1 415 570 12045" id="mobile_phone" type="text" class="validate">
+                                <label for="mobile_phone">Mobile Phone</label>
+                            </div>
+                        </div>
+                        <div class="row center-align">
+                            <button type="submit" class="waves-effect waves-light btn blue">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('javascript')
 <script>
-    var vm = new Vue({
+    var cha_vm = new Vue({
         el: '#character_panel',
         data: {
             characters: [],
@@ -60,20 +86,39 @@
         methods: {
             update: function (character) {
                 this.$http.patch('/characters/' + character.id, { character }).then(function (resp) {
-                    Materialize.toast('Character updated :)', 4000) // 4000 is the duration of the toast
+                    Materialize.toast('Character updated :)', 4000);
                 }).catch(function (resp) {
-                    Materialize.toast('Something went wrong :(', 4000) // 4000 is the duration of the toast
+                    Materialize.toast('Something went wrong :(', 4000);
                 });
             },
             remove: function (character) {
                 this.$http.delete('/characters/' + character.id).then(function (resp) {
-                    Materialize.toast('Character removed!', 4000) // 4000 is the duration of the toast
+                    Materialize.toast('Character removed!', 4000);
                     this.characters.$remove(character);
                 }).catch(function (resp) {
-                    Materialize.toast('Something went wrong :(', 4000) // 4000 is the duration of the toast
+                    Materialize.toast('Something went wrong :(', 4000);
                 });
             }
         },
+    });
+
+    var not_vm = new Vue({
+        el: '#notification_panel',
+        data: {
+            use_mobile: {{ \Auth::user()->mobile_phone === null ? 'false' : 'true' }},
+            mobile_phone: '{{ \Auth::user()->mobile_phone }}',
+            frequency: {{ \Auth::user()->frequency ?? 30 }},
+        },
+        methods: {
+            update: function () {
+                this.$http.patch('/users', { phone: this.mobile_phone, frequency: this.frequency }).then(function (resp) {
+                    this.use_mobile = true;
+                    Materialize.toast('Updated your settings :)', 4000);
+                }).catch(function (resp) {
+                    Materialize.toast('Something went wrong :(', 4000);
+                });
+            }
+        }
     });
 </script>
 @endsection

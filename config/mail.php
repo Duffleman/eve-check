@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'eve-check@dfl.mn', 'name' => null],
 
     /*
     |--------------------------------------------------------------------------
