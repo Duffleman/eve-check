@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class SetMobileRequest extends Request
+class NewNotifierRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class SetMobileRequest extends Request
     public function rules()
     {
         return [
-            'phone'     => 'required',
-            'frequency' => 'required|integer',
+            'type'  => 'required|in:mobile,email',
+            'value' => 'required',
         ];
     }
 }

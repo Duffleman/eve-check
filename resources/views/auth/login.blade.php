@@ -9,10 +9,20 @@
 			<div class="input-field col s6">
 				<input id="name" name="name" type="text" class="validate">
 				<label for="name">Name</label>
+				@if ($errors->has('name'))
+	                <span class="help-block">
+	                    <strong>{{ $errors->first('name') }}</strong>
+	                </span>
+	            @endif
 			</div>
 			<div class="input-field col s6">
 				<input id="password" name="password" type="password" class="validate">
 				<label for="password">Password</label>
+				@if ($errors->has('password'))
+	                <span class="help-block">
+	                    <strong>{{ $errors->first('password') }}</strong>
+	                </span>
+	            @endif
 			</div>
 		</div>
 		<div class="row">

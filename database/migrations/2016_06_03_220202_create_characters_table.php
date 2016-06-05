@@ -17,6 +17,7 @@ class CreateCharactersTable extends Migration
             $table->string('owner');
             $table->string('refresh_token');
             $table->enum('monitored', ['yes', 'no'])->default('no');
+            $table->enum('status', ['online', 'offline'])->default('offline');
             $table->timestamps();
         });
     }

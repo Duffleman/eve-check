@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CheckCharacters::class,
+        Commands\NotifyUsers::class,
     ];
 
     /**
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('check')->everyThirtyMinutes();
+        $schedule->command('check')->everyMinute();
+        $schedule->command('notify')->everyMinute();
     }
 }

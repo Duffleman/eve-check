@@ -7,13 +7,11 @@ use Auth;
 
 class UsersController extends Controller
 {
-    public function update(Requests\SetMobileRequest $request)
+    public function update(Requests\UpdateNotificationSettings $request)
     {
-        $phone = $request->get('phone');
         $frequency = $request->get('frequency');
         $user = Auth::user();
 
-        $user->mobile_phone = $phone;
         $user->frequency = $frequency;
         $user->save();
     }

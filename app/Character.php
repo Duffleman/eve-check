@@ -22,6 +22,11 @@ class Character extends Model
         'user_id',
     ];
 
+    public function online()
+    {
+        return $this->status === 'online';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

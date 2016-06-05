@@ -40,6 +40,7 @@ class CharactersController extends Controller
             $character->monitored = 'yes';
             if ($checked === true) {
                 $character->monitored = 'no';
+                $character->status = 'offline';
             }
             $character->save();
         }

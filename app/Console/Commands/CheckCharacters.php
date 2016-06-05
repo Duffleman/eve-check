@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Character;
+use App\Events\CharacterStatusChange;
 use Duffleman\JSONClient\JSONClient;
 use Illuminate\Console\Command;
-use Mail;
 
 class CheckCharacters extends Command
 {
@@ -41,6 +41,8 @@ class CheckCharacters extends Command
         $characters = Character::where('monitored', 'yes')->get();
         foreach ($characters as $character) {
             \Log::info("Checking: {$character->name}");
+
+            $current_status = $character->status;
             $cache_key = "at_{$character->id}";
 
             if (\Cache::has($cache_key)) {
@@ -70,20 +72,23 @@ class CheckCharacters extends Command
                 $location = $client->mode(1)->get("/characters/{$character->id}/location/");
             } catch (\Exception $ex) {
                 \Cache::forget($cache_key);
+                \Log::info("{$character->name}: Access token invalid, removed it from the cache.");
 
                 return;
             }
 
             if (empty($location)) {
-                \Log::info("{$character->name}: Character is offline!");
-
-                $user = $character->user;
-                Mail::raw("{$character->name} is offline!", function ($message) use ($user) {
-                    $message->to($user->mobile_phone);
-                });
+                $character->status = 'offline';
             } else {
-                \Log::info("{$character->name}: Character is online in {$location['solarSystem']['name'] } :)");
+                $character->status = 'online';
             }
+
+            \Log::info("{$character->name}: Character marked as {$character->status}.");
+
+            $character->save();
+            $character = $character->fresh();
+
+            event(new CharacterStatusChange($current_status, $character));
         }
     }
 }
